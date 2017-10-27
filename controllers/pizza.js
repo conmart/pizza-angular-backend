@@ -23,3 +23,4 @@ function create(req, res) {
 }
 
 module.exports.index = index;
+module.exports.create = create;
