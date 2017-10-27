@@ -40,6 +40,7 @@ app.get('/api/pizzas', Pizza.index);
 app.post('/api/pizzas', Pizza.create);
 
 app.post('/login', passport.authenticate('local'), function(req, res) {
+  console.log("did the login maybe?")
   res.json()
 });
 
