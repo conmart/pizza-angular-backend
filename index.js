@@ -127,6 +127,11 @@ app.post('/signup', passport.authenticate('local-signup'), function(req, res) {
 
 })
 
+app.get("/logout", function(req, res) {
+  req.logout();
+  res.json();
+})
+
 
 app.listen(process.env.PORT || 3000, function () {
   console.log('Example app listening at http://localhost:3000/');
