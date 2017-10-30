@@ -72,13 +72,19 @@ var Pizza = require('./controllers/pizza');
 // generate a new express app and call it 'app'
 var app = express();
 
-app.use(cors());
+var corsOptions = {
+  origin: 'http://localhost:4200',
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  credentials: true,
+}
+app.use(cors(corsOptions));
 
 // serve static files in public
 app.use(express.static('public'));
 
 // body parser config to accept our datatypes
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json())
 app.use(session({ secret: 'wow secrets' }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -95,21 +101,30 @@ passport.deserializeUser(function(id, done) {
 
 app.use(function(req, res, next) {
   console.log("got a request", req.method, req.url);
+  if(req.method == "POST") {
+    console.log("body is", req.body)
+  }
   next();
 })
 
-app.options('*', cors())
+
+app.options('*', cors(corsOptions))
 app.get('/api/pizzas', Pizza.index);
 app.post('/api/pizzas', Pizza.create);
 
 app.post('/login', passport.authenticate('local-signin'), function(req, res) {
   console.log("did the login maybe? logged in user is", req.user)
-  res.json()
+  req.login(req.user, function(err) {
+    res.json();
+  })
 });
 
 app.post('/signup', passport.authenticate('local-signup'), function(req, res) {
   console.log("signed up yo")
-  res.json()
+  req.login(req.user, function(err) {
+    res.json()
+  })
+
 })
 
 
